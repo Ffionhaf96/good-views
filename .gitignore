@@ -3,3 +3,4 @@ __pycache__/
 dir.txt
 gen_db_schema.py
 schema.sql
+.env
