@@ -34,7 +34,7 @@ class User(Base):
                             secondaryjoin=(followers_table.c.followed_id == id),
                             backref='followers')
 
-o
+
 class Person(Base):
     __tablename__ = 'persons'
     id = Column(Integer, primary_key=True)
