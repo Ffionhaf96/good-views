@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  good-views:
+    image: good-views
+    env_file:
+      - app/.env
+    ports:
+      - 5000:5000
+    volumes:
+      - ./app:/good-views/app
+    depends_on:
+      - postgres
+    environment:
+      - FLASK_RUN_HOST=0.0.0.0
+    networks:
+      - good-views-network
+
+  postgres:
+    image: postgres:latest
+    env_file:
+      - app/.env
+    volumes:
+      - postgresVolume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - good-views-network
+
+volumes:
+  goodViewsVolume:
+  postgresVolume:
+
+networks:
+  good-views-network:
+    driver: bridge
