@@ -1,0 +1,7 @@
+Flask
+sqlalchemy
+requests
+psycopg2-binary
+gunicorn
+python-dotenv
+argon2-cffi
