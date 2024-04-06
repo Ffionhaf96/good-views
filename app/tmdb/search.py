@@ -67,7 +67,7 @@ def tv_shows(title: str) -> Optional[List[TVShow]]:
     return tv_list
 
 
-def genres(genre_id: int) -> :
+def genres(genre_id: int) -> List[str]:
     """
     Find Genres
     "genre_ids": [
