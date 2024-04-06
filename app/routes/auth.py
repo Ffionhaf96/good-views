@@ -21,4 +21,4 @@ def register():
 
 @bp.route('/health', methods=['GET'])
 def health():
-    return jsonify({'status': False})
+    return jsonify({'status': True})
