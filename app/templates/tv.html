@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Searched TV Shows</h1>
+<ul>
+    {% for show in shows %}
+    <li>
+        <strong>{{ show.title }}</strong> - First aired: {{ show.first_air_date }}
+        <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{show.poster_path}}">
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

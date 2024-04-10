@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>Searched Movies</h1>
+    <ul>
+        {% for movie in movies %}
+            <li>
+                <strong>{{ movie.title }}</strong> - Released on: {{ movie.release_date }}
+                <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{movie.poster_path}}">
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
