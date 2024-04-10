@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>{{ series.title }}</h1>
+<ul>
+    <li>
+        <strong>{{ series.number_of_seasons }}</strong>
+        <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{series.poster_path}}">
+    </li>
+    <li>
+        <p>{{ series.release_date }}</p>
+    </li>
+    <li>
+        <p>{{ series.description }}</p>
+    </li>
+</ul>
+{% endblock %}
