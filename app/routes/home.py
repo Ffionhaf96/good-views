@@ -1,8 +1,9 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, render_template
 
 
-bp = Blueprint('home', __name__, url_prefix='/home')
+bp = Blueprint("home", __name__, url_prefix="/home")
 
-@bp.route('/', methods=['GET'])
+
+@bp.route("/", methods=["GET"])
 def home():
-    return jsonify({'status': 'Home'})
+    return render_template("index.html")
