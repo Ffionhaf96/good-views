@@ -40,7 +40,7 @@ class User(Base):
     username = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    avatar_path = Column(String, default="static/images/avatars/")
+    avatar_path = Column(String, default="static/images/avatars/default.svg")
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     lists = relationship("List", backref="user")
     followed = relationship(
