@@ -12,7 +12,7 @@ def create_app():
     app.config["FLASK_RUN_PORT"] = os.getenv("FLASK_RUN_PORT", 5000)
     app.logger.addHandler(logging.StreamHandler(sys.stdout))
     app.logger.setLevel(logging.DEBUG)
-
+    app.secret_key = os.getenv("SECRET_KEY")
     # Register blueprints
     from .routes import auth, movie, tv, user, home
 
