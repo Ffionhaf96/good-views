@@ -65,13 +65,3 @@ def tv_shows(title: str) -> Optional[List[TVShow]]:
         key=lambda show: show.popularity,
     )
     return tv_list
-
-
-def genres(genre_id: int) -> List[str]:
-    """
-    Find Genres
-    "genre_ids": [
-        53,
-        80
-    """
-    pass
