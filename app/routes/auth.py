@@ -7,7 +7,7 @@ from flask import (
     redirect,
     url_for,
 )
-from controllers.user import create_user, verify_user
+from controllers.user import create, verify, get_by_email
 
 # Create a Blueprint for the auth routes
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -23,10 +23,10 @@ def register():
     password = data.get("password")
     email = data.get("email")
 
-    if not create_user(username=username, password=password, email=email):
+    if not create(username=username, password=password, email=email):
         return render_template("register.html"), 400
 
-    return redirect(url_for("login"))
+    return redirect(url_for("auth.login"))
 
 
 @bp.route("/login", methods=["POST", "GET"])
@@ -39,11 +39,13 @@ def login():
     password = data.get("password")
     email = data.get("email")
 
-    if not verify_user(email=email, password=password):
+    if not verify(email=email, password=password):
         return render_template("login.html")
 
     # Add verified user to new session - adapted from -> https://flask.palletsprojects.com/en/3.0.x/quickstart/#sessions
     session["email"] = email
+    user_id = get_by_email(email)
+    session["id"] = user_id.id
 
     return redirect(url_for("home.home"))
 
