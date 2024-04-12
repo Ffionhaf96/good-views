@@ -2,6 +2,7 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
+    Boolean,
     ForeignKey,
     Table,
     Float,
@@ -39,6 +40,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
+    admin = Column(Boolean, default=False)
     hashed_password = Column(String, nullable=False)
     avatar_path = Column(String, default="static/images/avatars/default.svg")
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
