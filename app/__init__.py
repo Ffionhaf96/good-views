@@ -20,5 +20,6 @@ def create_app():
     app.register_blueprint(auth.bp)
     app.register_blueprint(movie.bp)
     app.register_blueprint(tv.bp)
+    app.register_blueprint(user.bp)
 
     return app
