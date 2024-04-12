@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Username - {{ user.username }}</h1>
+<h2> Email - {{ user.email }}</h2>
+<img src="{{ url_for('static', filename=user.avatar_path) }}">
+<form method="post" action="{{ url_for('user.edit')}}">
+    <div class="signup-form">
+        <label for="name">Edit your name</label>
+        <input type="text" name="name" id="name" required />
+    </div>
+    <div class="signup-form">
+        <label for="username">Edit your username:</label>
+        <input type="text" name="username" id="username" required />
+    </div>
+</form>
+
+<hr>
+
+<form method="post" action="{{ url_for('user.edit')}}">
+    <div class="signup-form">
+        <label for="name">Edit your name</label>
+        <input type="text" name="name" id="name" required />
+    </div>
+    <div class="signup-form">
+        <label for="username">Edit your username:</label>
+        <input type="text" name="username" id="username" required />
+    </div>
+</form>
+
+{% endblock %}
