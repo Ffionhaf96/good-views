@@ -4,7 +4,7 @@ from argon2 import PasswordHasher
 from typing import Optional
 
 
-def create_user(username: str, email: str, password: str) -> bool:
+def create(username: str, email: str, password: str) -> bool:
     # Create a new session
     session = Session()
 
@@ -32,7 +32,18 @@ def create_user(username: str, email: str, password: str) -> bool:
         session.close()
 
 
-def verify_user(email: str, password: str) -> Optional[str]:
+def get_by_id(id: int) -> Optional[User]:
+    """Retrieve a user based on the ID or Email"""
+    session = Session()
+    return session.get(User, id)
+
+
+def get_by_email(email: str) -> Optional[User]:
+    session = Session()
+    return session.query(User).filter_by(email=email).first()
+
+
+def verify(email: str, password: str) -> Optional[str]:
     """Verify a user based on email and password combination"""
     session = Session()
     user = session.query(User).filter_by(email=email).first()
@@ -44,3 +55,74 @@ def verify_user(email: str, password: str) -> Optional[str]:
 
     # user did not pass verification
     return None
+
+
+def delete(email: str) -> bool:
+    """Delete a user based on their email"""
+    session = Session()
+    user = session.query(User).filter_by(email=email).first()
+    if not user:
+        return None
+    try:
+        # delete the user
+        session.delete(user)
+        return True
+    except Exception as e:
+        print(f"Could not delete user - {e}")
+        session.rollback()
+        return False
+    finally:
+        session.close()
+
+
+def update(
+    email: str, username: Optional[str], name: Optional[str], avatar_path: Optional[str]
+) -> bool:
+    session = Session()
+    user = session.query(User).filter_by(email=email)
+
+    if username:
+        user.username = username
+
+    if name:
+        user.name = name
+
+    if avatar_path:
+        user.avatar_path = avatar_path
+
+    try:
+        session.add(user)
+        session.commit()
+        return True
+    except Exception as e:
+        session.rollback()
+        print(f"Couldn't update user {email} - {e}")
+        return False
+
+
+def follow(follower_email: str, followed_email: str):
+    session = Session()
+    follower = session.query(User).filter_by(email=follower_email)
+    followed = session.query(User).filter_by(email=followed_email)
+
+    try:
+        follower.followed.append(followed)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Couldn't follow user {followed.email} - {e}")
+        return False
+
+
+def unfollow(follower_email: str, followed_email: str):
+    session = Session()
+    follower = session.query(User).filter_by(email=follower_email)
+    followed = session.query(User).filter_by(email=followed_email)
+
+    try:
+        follower.followed.remove(followed)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Couldn't unfollow user {followed.email} - {e}")
+        return False
