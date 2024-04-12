@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, url_for, redirect
+from flask import Blueprint, request, render_template, url_for, redirect, flash
 from tmdb.search import tv_shows
 from controllers.tv import populate_from_tmdb, get_show
 
@@ -19,6 +19,9 @@ def search():
 def populate_series():
     """Populate the series data from TMDB to the database"""
     tmdb_series_id = request.args.get("tmdb-id")
+    if not tmdb_series_id:
+        flash("Please specify a TMDB id")
+        return request.url
     series_id = populate_from_tmdb(tmdb_id=tmdb_series_id)
     # return redirect(url_for(series_detail(series_id)))
     if not series_id:
