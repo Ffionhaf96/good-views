@@ -7,7 +7,6 @@ from flask import (
     session,
     jsonify,
     flash,
-    send_from_directory,
 )
 import controllers.user
 from pathlib import Path
@@ -20,26 +19,42 @@ bp = Blueprint("user", __name__, url_prefix="/user")
 
 @bp.route("/<int:id>", methods=["GET"])
 def user(id: int):
+    if not id:
+        id = session.get("id")
     user = controllers.user.get_by_id(id)
     if not user:
         return render_template("404.html"), 404
-    return render_template("user.html", user=user)
+    following = controllers.user.is_following(
+        follower_id=session.get("id"), followee_id=id
+    )
+    return render_template("user.html", user=user, following=following)
+
+
+@bp.route("/", methods=["GET"])
+def user_self():
+    id = session.get("id")
+    user = controllers.user.get_by_id(id)
+    if not user:
+        return render_template("404.html"), 404
+    return render_template("user-self.html", user=user)
 
 
 @bp.route("/", methods=["POST"])
 def edit():
     email = session.get("email")
     if not email:
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.login"), code=400)
 
     username = request.form.get("username")
     name = request.form.get("name")
 
-    user = controllers.user.update(email=email, username=username, name=name)
+    user = controllers.user.update(
+        email=email, username=username, name=name, avatar_path=None
+    )
     if not user:
         flash("Couldn't update the user as they don't exist!")
-        return redirect(request.url), 404
-    return render_template("user.html", user=user)
+        return redirect(url_for("user.user_self"), code=404)
+    return redirect(url_for("user.user_self"), code=302)
 
 
 @bp.route("/avatar", methods=["POST"])
@@ -77,21 +92,27 @@ def delete():
 
 @bp.route("/follow", methods=["POST"])
 def follow():
-    follower_email = session.get("email")
-    followed_email = request.form.get("email")
-    if not controllers.user.follow(
-        follower_email=follower_email, followed_email=followed_email
-    ):
-        return jsonify({"success": False}), 400
-    return jsonify({"success": True})
+    follower_id = session.get("id")
+    followed_id = request.form.get("id")
+
+    if not controllers.user.follow(follower_id=follower_id, followed_id=followed_id):
+        flash("Could not follow user")
+    else:
+        flash("User is now being followed!")
+
+    return redirect(url_for("user.user", id=followed_id))
 
 
 @bp.route("/unfollow", methods=["POST"])
 def unfollow():
-    follower_email = session.get("email")
-    followed_email = request.form.get("email")
+    unfollower_id = session.get("id")
+    unfollowed_id = request.form.get("id")
+
     if not controllers.user.unfollow(
-        follower_email=follower_email, followed_email=followed_email
+        follower_id=unfollower_id, followed_id=unfollowed_id
     ):
-        return jsonify({"success": False}), 400
-    return jsonify({"success": True})
+        flash("Could not unfollow user")
+    else:
+        flash("User has been unfollowed!")
+
+    return redirect(url_for("user.user", id=unfollowed_id))
