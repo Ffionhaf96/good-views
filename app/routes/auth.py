@@ -6,6 +6,7 @@ from flask import (
     session,
     redirect,
     url_for,
+    flash,
 )
 from controllers.user import create, verify, get_by_email
 
@@ -19,13 +20,15 @@ def register():
         return render_template("register.html")
     # Get data from request - adapted from -> https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
     data = request.form
+    name = data.get("name")
     username = data.get("username")
     password = data.get("password")
     email = data.get("email")
 
-    if not create(username=username, password=password, email=email):
+    if not create(name=name, username=username, password=password, email=email):
         return render_template("register.html"), 400
 
+    flash("Account created successfully - please login")
     return redirect(url_for("auth.login"))
 
 
