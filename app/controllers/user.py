@@ -4,7 +4,8 @@ from argon2 import PasswordHasher
 from typing import Optional
 
 
-def create(username: str, email: str, password: str) -> bool:
+def create(name: str, username: str, email: str, password: str) -> bool:
+    """Create a user and save it to the database"""
     # Create a new session
     session = Session()
 
@@ -17,7 +18,9 @@ def create(username: str, email: str, password: str) -> bool:
     # Hash the password for security
     ph = PasswordHasher()
     hashed_pass = ph.hash(password)
-    new_user = User(username=username, email=email, hashed_password=hashed_pass)
+    new_user = User(
+        name=name, username=username, email=email, hashed_password=hashed_pass
+    )
 
     try:
         # Add the new user to the session and commit
@@ -33,12 +36,13 @@ def create(username: str, email: str, password: str) -> bool:
 
 
 def get_by_id(id: int) -> Optional[User]:
-    """Retrieve a user based on the ID or Email"""
+    """Retrieve a user based on the ID"""
     session = Session()
     return session.get(User, id)
 
 
 def get_by_email(email: str) -> Optional[User]:
+    """Retrieve a user based on the email"""
     session = Session()
     return session.query(User).filter_by(email=email).first()
 
@@ -100,29 +104,49 @@ def update(
         return False
 
 
-def follow(follower_email: str, followed_email: str):
+def follow(follower_id: str, followed_id: str) -> Optional[int]:
+    """Follower a user based on the id"""
     session = Session()
-    follower = session.query(User).filter_by(email=follower_email)
-    followed = session.query(User).filter_by(email=followed_email)
+    follower = session.get(User, follower_id)
+    followed = session.get(User, followed_id)
 
     try:
         follower.followed.append(followed)
         session.commit()
     except Exception as e:
         session.rollback()
-        print(f"Couldn't follow user {followed.email} - {e}")
-        return False
+        print(f"Couldn't follow user {followed.id} - {e}")
+        return None
+
+    return followed.id
 
 
-def unfollow(follower_email: str, followed_email: str):
+def unfollow(follower_id: int, followed_id: int) -> Optional[int]:
+    """Unfollow a user based on the id"""
     session = Session()
-    follower = session.query(User).filter_by(email=follower_email)
-    followed = session.query(User).filter_by(email=followed_email)
+
+    unfollower = session.get(User, follower_id)
+    unfollowed = session.get(User, followed_id)
 
     try:
-        follower.followed.remove(followed)
+        unfollower.followed.remove(unfollowed)
         session.commit()
     except Exception as e:
         session.rollback()
-        print(f"Couldn't unfollow user {followed.email} - {e}")
+        print(f"Couldn't unfollow user {unfollowed.id} - {e}")
+        return None
+
+    return unfollowed.id
+
+
+def is_following(follower_id: int, followee_id: int) -> bool:
+    """Check if a user is following another user"""
+    session = Session()
+
+    follower = session.get(User, follower_id)
+    followee = session.get(User, followee_id)
+
+    if not follower or not followee:
         return False
+
+    return followee in follower.followed
