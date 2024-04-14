@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>{{ series.title }}</h1>
+<img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{movie.poster_path}}">
+<ul>
+    <li>
+        <p>{{ movie.release_date }}</p>
+    </li>
+    <li>
+        <p>{{ movie.description }}</p>
+    </li>
+    <li>
+        <p>{{ movie.duration_minutes }}</p>
+    </li>
+    <li>
+        <p>{{ movie.budget }}</p>
+    </li>
+    <li>
+        <p>{{ movie.revenue }}</p>
+    </li>
+</ul>
+{% endblock %}
