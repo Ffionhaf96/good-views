@@ -103,14 +103,6 @@ The table shows the importance and difficulty of these features - I will priorit
 | Site Admins      | Respond to user inquiries and feedback | Medium | Low |
 
 
-### **Structure Plane**
-
-Based on the identified features and user stories a flowchart for the GoodViews website was developed:
-
-![GoodViews Site Flow Chart](insert link)
-
-### **Surface Plane**
-
 #### Wireframes
 
 This section presents the wireframes for the GoodViews website. Creating wireframes is a crucial step in the development process, as they provide a clear visual guideline for the user interface and layout. These wireframes are the initial concepts for how the site will display and organize its content and features. Below are the designs for various pages and functionalities of GoodViews:
@@ -218,3 +210,13 @@ This section details the sources and creation methods for the various graphics a
 
 *write about other images once they've been used*
 All images and graphics used on GoodViews have detailed in the credits section.
+
+
+### Bugs and Issues
+
+#### Flashed messages not appearing in layout template
+The [flashing](https://flask.palletsprojects.com/en/3.0.x/patterns/flashing/) layout specified in the documentation did not work. No messages would flash and they would still be in the queue. 
+
+To workaround this issue I made a Jinja macro which I could import into my `layout.html` inside the `{% block body %}`
+without it being overidden by child templates using the `{% block body %}`. 
+
