@@ -39,10 +39,11 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     admin = Column(Boolean, default=False)
     hashed_password = Column(String, nullable=False)
-    avatar_path = Column(String, default="static/images/avatars/default.svg")
+    avatar_path = Column(String, default="images/avatars/default.svg")
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     lists = relationship("List", backref="user")
     followed = relationship(
