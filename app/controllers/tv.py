@@ -1,4 +1,11 @@
-from models.models import TVShow, Season, Episode, Person, ContentPersonAssociation
+from models.models import (
+    TVShow,
+    Season,
+    Episode,
+    Person,
+    ContentPersonAssociation,
+    List,
+)
 from db.db import Session
 from tmdb.tv import tv_detail, tv_episode_detail
 from tmdb.person import person_detail
@@ -87,5 +94,50 @@ def get_show(id: int):
     return show
 
 
+def get_season(show_id: int, season_number: int):
+    show = get_show(show_id)
+    season = show.season
+    print(show.season)
+    return season
+
+
+def get_episode(id: int):
+    session = Session()
+    show = session.get(TVShow, id)
+    return show
+
+
 def add_episode():
     pass
+
+
+def add_show_to_list(tv_id: int, list_id: int) -> bool:
+    """Add a TVShow to a specified list"""
+    session = Session()
+
+    tv_show = session.get(TVShow, tv_id)
+    content_list = session.get(List, list_id)
+
+    try:
+        content_list.append(tv_show)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Couldn't add TV show to list - {tv_show.title} - {e}")
+    return None
+
+
+def remove_show_to_list(tv_id: int, list_id: int) -> bool:
+    """Remove a TVShow from the specified list"""
+    session = Session()
+
+    tv_show = session.get(TVShow, tv_id)
+    content_list = session.get(List, list_id)
+
+    try:
+        content_list.remove(tv_show)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Couldn't remove TV show to list - {tv_show.title} - {e}")
+    return None
