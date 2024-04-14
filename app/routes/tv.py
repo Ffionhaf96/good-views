@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, url_for, redirect, flash
 from tmdb.search import tv_shows
-from controllers.tv import populate_from_tmdb, get_show
+from controllers.tv import populate_from_tmdb, get_show, get_season
 
 # Create a Blueprint for the auth routes
 bp = Blueprint("tv", __name__, url_prefix="/tv")
@@ -23,10 +23,9 @@ def populate_series():
         flash("Please specify a TMDB id")
         return request.url
     series_id = populate_from_tmdb(tmdb_id=tmdb_series_id)
-    # return redirect(url_for(series_detail(series_id)))
     if not series_id:
         return "Failed to populate"
-    return f"Success populating - {series_id}"
+    return redirect(url_for("tv.series_detail", id=series_id))
 
 
 @bp.route("/series/<int:id>", methods=["GET"])
@@ -36,13 +35,16 @@ def series_detail(id: int):
     return render_template("tv-series-detail.html", series=show)
 
 
-# @bp.route(
-#     "/series/<int:id>/season/<int:season_number>/episode/<int:episode_number>",
-#     methods=["GET"],
-# )
-# def season_detail(id: int, season_number: int, episode_number):
-#     """Retrieve season detail of a TV series"""
-#     return render_template("tv.html", season=episode)
+@bp.route(
+    "/series/<int:id>/season/<int:season_number>",
+    methods=["GET"],
+)
+def season_detail(id: int, season_number):
+    """Retrieve season detail of a TV series"""
+    return render_template(
+        "tv.html",
+        season=get_season(show_id=id, season_number=season_number),
+    )
 
 
 # @bp.route(
